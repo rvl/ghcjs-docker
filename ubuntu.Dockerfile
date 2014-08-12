@@ -1,16 +1,17 @@
-FROM ubuntu:precise
+FROM ubuntu:trusty
 MAINTAINER Rodney Lorrimar <dev@rodney.id.au>
 RUN echo "deb http://ppa.launchpad.net/hvr/ghc/ubuntu precise main" >> /etc/apt/sources.list
+RUN echo "deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main" >> /etc/apt/sources.list
 RUN apt-get -qq update
-RUN apt-get -qqy install build-essential git nodejs zlib1g-dev libtinfo-dev
+RUN apt-get -qqy install build-essential git zlib1g-dev libtinfo-dev
 RUN apt-get -qqy --allow-unauthenticated install ghc-7.8.3 cabal-install-1.20 alex-3.1.3 happy-1.19.4
+RUN apt-get -qqy --allow-unauthenticated install nodejs
 
 RUN adduser --disabled-password --quiet rodney
 
 COPY . /mnt/ghcjs
-COPY ./.git /mnt/ghcjs/.git
-
-RUN (cd /mnt/ghcjs && git submodule update --init)
+WORKDIR /mnt/ghcjs
+RUN git submodule update --init
 RUN chown -R rodney:rodney /mnt/ghcjs
 
 USER rodney
