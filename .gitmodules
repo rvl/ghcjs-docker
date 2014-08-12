@@ -7,3 +7,6 @@
 [submodule "haddock-internal"]
 	path = haddock-internal
 	url = https://github.com/ghcjs/haddock-internal.git
+[submodule "ghcjs"]
+	path = ghcjs
+	url = https://github.com/ghcjs/ghcjs.git
