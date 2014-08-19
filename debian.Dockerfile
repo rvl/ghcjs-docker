@@ -11,28 +11,31 @@ RUN echo "en_AU.UTF-8 UTF-8" > /etc/locale.gen
 RUN /usr/sbin/locale-gen
 ENV LANG en_AU.UTF-8
 
-RUN adduser --disabled-password --quiet rodney
+RUN adduser --disabled-password --quiet ghcjs
+RUN adduser ghcjs sudo
 
-COPY . /mnt/ghcjs
+COPY . /home/ghcjs/build
 
-WORKDIR /mnt/ghcjs
+WORKDIR /home/ghcjs/build
 RUN git submodule update --init
-RUN chown -R rodney:rodney /mnt/ghcjs
+RUN chown -R ghcjs:ghcjs /home/ghcjs/build
 
-USER rodney
-ENV HOME /home/rodney
-ENV PATH /home/rodney/.cabal/bin:/usr/bin:/bin
+USER ghcjs
+ENV HOME /home/ghcjs
+ENV PATH /home/ghcjs/.cabal/bin:/usr/bin:/bin
 RUN echo "export PATH=$PATH" >> $HOME/.profile
 
 RUN cabal update
 
-WORKDIR /mnt/ghcjs/cabal
+WORKDIR /home/ghcjs/build/cabal
 RUN cabal install ./Cabal ./cabal-install
 RUN cabal install --help | grep ghcjs > /dev/null
 
-WORKDIR /mnt/ghcjs
+WORKDIR /home/ghcjs/build
 RUN cabal install ./ghcjs-prim ./haddock-internal
 RUN cabal install --max-backjumps=-1 --reorder-goals ./ghcjs
 RUN ghcjs-boot --dev
 
-ENTRYPOINT /bin/bash
+USER ghcjs
+WORKDIR /home/ghcjs
+ENTRYPOINT /bin/bash -l
