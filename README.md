@@ -25,7 +25,7 @@ Assuming you have your Haskell project at ``~/myproject``, start a
 container with this command:
 
 ```
-docker run -t -i -v $HOME/myproject:/home/ghcjs/myproject -n myproject ghcjs:base
+docker run -t -i -v $HOME/myproject:/home/ghcjs/myproject --name myproject ghcjs:base
 ```
 
 From within the container, you would run commands such as:
@@ -43,11 +43,7 @@ cabal install --ghcjs
 The [ghcjs-examples](https://github.com/ghcjs/ghcjs-examples) repo is
 helpful to look at.
 
-You probably won't be able to build the ``ghcjs-hello`` example
-because because the ``ghcjs-dom`` library which requires ``gtk2hs``
-and ``webkit`` is a pain.
-
-The ``weblog`` examples build fine however:
+To build the ``weblog`` examples:
 
 ```
 git clone https://github.com/ghcjs/ghcjs-examples.git
@@ -65,8 +61,5 @@ If you don't want to build your own, you can get the image which I
 have built from the Docker Hub.
 
 ```
-docker pull rodney/ghcjs:base
+docker pull rodney/ghcjs
 ```
-
-I would like to get automated builds working but this Dockerfile
-doesn't seem to work... PRs welcome.
