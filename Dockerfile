@@ -19,24 +19,18 @@ ENV HOME /home/ghcjs
 ENV PATH /home/ghcjs/.cabal/bin:/usr/bin:/bin
 RUN echo "export PATH=$PATH" >> $HOME/.profile
 
+RUN cabal update
+RUN cabal install cabal-install
+RUN cabal install --help | grep ghcjs > /dev/null
+
 RUN mkdir /home/ghcjs/build
 WORKDIR /home/ghcjs/build
 
-RUN git clone --depth 1 --branch ghcjs   https://github.com/ghcjs/cabal.git
 RUN git clone --depth 1 --branch master  https://github.com/ghcjs/ghcjs-prim.git
-RUN git clone --depth 1 --branch ghc-7.8 https://github.com/ghcjs/haddock-internal.git
 RUN git clone --depth 1 --branch master  https://github.com/ghcjs/ghcjs.git
-
-RUN cabal update
-
-WORKDIR /home/ghcjs/build/cabal
-RUN cabal install ./Cabal ./cabal-install
-RUN cabal install --help | grep ghcjs > /dev/null
-
-WORKDIR /home/ghcjs/build
-RUN cabal install ./ghcjs-prim ./haddock-internal
+RUN cabal install ./ghcjs-prim
 RUN cabal install --max-backjumps=-1 --reorder-goals ./ghcjs
-RUN ghcjs-boot --dev
+RUN ghcjs-boot --with-node nodejs --dev
 
 RUN rm -rf /home/ghcjs/build
 
